@@ -2,14 +2,127 @@
 
 The files in this repository were used to configure the network depicted below.
 
-https://github.com/g5nad2000/elk_me_up/blob/main/Diagrams/Azure_ELK_Stack.svg
+![Azure_ELK_Stack](https://user-images.githubusercontent.com/8868090/110556870-fb3f1600-8104-11eb-8f7b-cc42fdccdf34.jpg)
 
-These files have been tested and used to generate a live ELK deployment on Azure. They can be used to either recreate the entire deployment pictured above. Alternatively, select portions of the _____ file may be used to install only certain pieces of it, such as Filebeat.
 
-  - _TODO: Enter the playbook file._
+
+These files have been tested and used to generate a live ELK deployment on Azure. They can be used to either recreate the entire deployment pictured above. Alternatively, select portions of the yaml playbook file may be used to install only certain pieces of it, such as Filebeat.
+
+
+---
+- name: install elk docker container
+  hosts: elk
+  remote_user: azadmin
+  become: true
+  tasks:
+
+    - name: update apt-get repo and cache
+      apt: update_cache=yes force_apt_get=yes cache_valid_time=3600
+
+    - name: Increase Virtual Memory
+      command: sysctl -w vm.max_map_count=262144
+
+    - name: use more memory
+      sysctl:
+        name: vm.max_map_count
+        value: '262144'
+        state: present
+        reload: yes
+
+    - name: install docker.io
+      apt:
+        update_cache: yes
+        force_apt_get: yes
+        name: docker.io
+        state: present
+
+    - name: install python3-pip
+      apt:
+        force_apt_get: yes
+        name: python3-pip
+        state: present
+
+    - name: install docker python module
+      pip:
+        name: docker-py
+        state: present
+
+    - name: download and launch a docker elk container
+      docker_container:
+        name: elk
+        image: sebp/elk:761
+        state: started
+        restart_policy: always
+        # Please list the ports that ELK runs on
+        published_ports:
+          -  5601:5601
+          -  9200:9200
+          -  5044:5044
+
+    - name: enable service docker on boot
+      systemd:
+        state: started
+        name: docker
+
+
+---
+- name: install elk docker container
+  hosts: elk
+  remote_user: azadmin
+  become: true
+  tasks:
+
+    - name: update apt-get repo and cache
+      apt: update_cache=yes force_apt_get=yes cache_valid_time=3600
+
+    - name: Increase Virtual Memory
+      command: sysctl -w vm.max_map_count=262144
+
+    - name: use more memory
+      sysctl:
+        name: vm.max_map_count
+        value: '262144'
+        state: present
+        reload: yes
+
+    - name: install docker.io
+      apt:
+        update_cache: yes
+        force_apt_get: yes
+        name: docker.io
+        state: present
+
+    - name: install python3-pip
+      apt:
+        force_apt_get: yes
+        name: python3-pip
+        state: present
+
+    - name: install docker python module
+      pip:
+        name: docker-py
+        state: present
+
+    - name: download and launch a docker elk container
+      docker_container:
+        name: elk
+        image: sebp/elk:761
+        state: started
+        restart_policy: always
+        # Please list the ports that ELK runs on
+        published_ports:
+          -  5601:5601
+          -  9200:9200
+          -  5044:5044
+
+    - name: enable service docker on boot
+      systemd:
+        state: started
+        name: docker
+
 
 This document contains the following details:
-- Description of the Topologu
+- Description of the Topology
 - Access Policies
 - ELK Configuration
   - Beats in Use
