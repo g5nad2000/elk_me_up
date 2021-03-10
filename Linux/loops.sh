@@ -20,7 +20,7 @@ done
 # Create a loop that looks for 'Hawaii'
 for state in ${states[@]};
 do
-  if [ $state == 'Hawaii' ];
+  if [ $state = 'Hawaii' ];
 
   then
     echo "Hawaii is the best!"
