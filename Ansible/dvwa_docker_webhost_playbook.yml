@@ -1,0 +1,37 @@
+---
+- name: install docker.io python3 cyberxsecurity dvwa
+  hosts: webservers
+  remote_user: azadmin
+  become: true
+  tasks:
+
+    - name: install docker.io
+      apt:
+        update_cache: yes
+        force_apt_get: yes
+        name: docker.io
+        state: present
+
+    - name: python3-pip
+      apt:
+        force_apt_get: yes
+        name: python3-pip
+        state: present
+
+    - name: docker module
+      pip:
+        name: docker
+        state: present
+
+
+    - name: enable docker state is running
+      systemd: state=started name=docker
+
+    - name: install cyberxsecurity docker container configure ports and restart policy
+      docker_container:
+          name: vulnerables
+          image: vulnerables/web-dvwa
+          ports:
+          - 80:80
+          state: started
+          restart_policy: always

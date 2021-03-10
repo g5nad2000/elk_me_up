@@ -1,0 +1,3 @@
+filebeat and metricbeat beat configuration files "metricbeat--config.yml" "filebeat-config.yml" should be containted within the ansible container "\etc\ansible\files" directory.
+
+The YAML playbooks for installation of MetricBeats and FileBeats reference these YAML config files to install the beats collector to allow for transmission and delivery of the selected beats data to the specified ELK server. 
